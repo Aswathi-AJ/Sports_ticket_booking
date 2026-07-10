@@ -72,7 +72,7 @@ A simple web application for booking sports event tickets, built as a DBMS mini-
 
 1. Start the server:
    ```bash
-   node server.js
+   npm start
    ```
 
 2. Open your browser and navigate to `http://localhost:3000`

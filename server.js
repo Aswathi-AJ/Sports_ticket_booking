@@ -2,28 +2,30 @@ const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(express.static('public')); // Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from the 'public' directory
 
 // MySQL connection
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root', // Your MySQL username
-    password: '0022', // Your MySQL password
-    database: 'Miniproj_Sports'
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root', // Your MySQL username
+    password: process.env.DB_PASSWORD || '0022', // Your MySQL password
+    database: process.env.DB_NAME || 'Miniproj_Sports'
 });
 
 // Connect to MySQL
 db.connect((err) => {
     if (err) {
-        throw err;
+        console.error('MySQL connection error:', err);
+        process.exit(1);
     }
     console.log('MySQL connected...');
 });
@@ -131,7 +133,20 @@ app.delete('/tickets/:ticketId', (req, res) => {
     });
 });
 
+app.use((req, res) => {
+    res.status(404).json({ message: 'Not found' });
+});
+
 // Start the server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.error(`Port ${PORT} is already in use. Stop the running process or set PORT to a different value.`);
+    } else {
+        console.error('Server error:', err);
+    }
+    process.exit(1);
 });

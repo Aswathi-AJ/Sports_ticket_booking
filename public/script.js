@@ -1,14 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
-    loadEvents();
+    const eventSelect = document.getElementById('eventSelect');
 
-    // Handle adding a new event
+    eventSelect.addEventListener('change', () => {
+        const eventId = eventSelect.value;
+        if (eventId) {
+            loadTickets(eventId);
+        } else {
+            clearTickets();
+        }
+    });
+
     document.getElementById('addEventForm').addEventListener('submit', async (event) => {
         event.preventDefault();
         const eventName = document.getElementById('eventName').value;
         const venue = document.getElementById('venue').value;
         const eventDate = document.getElementById('eventDate').value;
 
-        const response = await fetch('http://localhost:3000/events', {
+        const response = await fetch('/events', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -17,18 +25,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const result = await response.json();
-        document.getElementById('message').innerText = result.message;
-        loadEvents(); // Reload events to reflect changes
+        showMessage(result.message, response.ok);
+        await loadEvents(); // Reload events to reflect changes
     });
 
-    // Handle booking form submission
     document.getElementById('bookingForm').addEventListener('submit', async (event) => {
         event.preventDefault();
-        const eventId = document.getElementById('eventId').value;
+        const eventId = document.getElementById('eventSelect').value;
         const seatNumber = document.getElementById('seatNumber').value;
         const price = document.getElementById('price').value;
 
-        const response = await fetch('http://localhost:3000/tickets', {
+        if (!eventId) {
+            showMessage('Please select an event before booking.', false);
+            return;
+        }
+
+        const response = await fetch('/tickets', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -37,17 +49,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const result = await response.json();
-        document.getElementById('message').innerText = result.message;
-        loadTickets(eventId); // Load tickets for the selected event
+        showMessage(result.message, response.ok);
+        if (response.ok) {
+            loadTickets(eventId);
+        }
     });
 
-    // Handle update form submission
     document.getElementById('updateForm').addEventListener('submit', async (event) => {
         event.preventDefault();
         const ticketId = document.getElementById('ticketId').value;
         const newPrice = document.getElementById('newPrice').value;
+        const selectedEventId = document.getElementById('eventSelect').value;
 
-        const response = await fetch(`http://localhost:3000/tickets/${ticketId}`, {
+        const response = await fetch(`/tickets/${ticketId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -56,31 +70,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const result = await response.json();
-        document.getElementById('message').innerText = result.message;
-        loadTickets(document.getElementById('eventId').value); // Reload tickets for the selected event
+        showMessage(result.message, response.ok);
+        if (response.ok && selectedEventId) {
+            loadTickets(selectedEventId);
+        }
     });
 
-    // Handle delete form submission
     document.getElementById('deleteForm').addEventListener('submit', async (event) => {
         event.preventDefault();
         const ticketId = document.getElementById('deleteTicketId').value;
+        const selectedEventId = document.getElementById('eventSelect').value;
 
-        const response = await fetch(`http://localhost:3000/tickets/${ticketId}`, {
+        const response = await fetch(`/tickets/${ticketId}`, {
             method: 'DELETE',
         });
 
         const result = await response.json();
-        document.getElementById('message').innerText = result.message;
-        loadTickets(document.getElementById('eventId').value); // Reload tickets for the selected event
+        showMessage(result.message, response.ok);
+        if (response.ok && selectedEventId) {
+            loadTickets(selectedEventId);
+        }
     });
+
+    loadEvents();
 });
 
 // Function to load events and display them
 async function loadEvents() {
-    const response = await fetch('http://localhost:3000/events');
+    const response = await fetch('/events');
     const events = await response.json();
     const eventsBody = document.getElementById('events');
     eventsBody.innerHTML = ''; // Clear previous events
+
+    const eventSelect = document.getElementById('eventSelect');
+    eventSelect.innerHTML = '<option value="">Choose an event</option>';
 
     events.forEach(event => {
         const eventRow = document.createElement('tr');
@@ -91,12 +114,17 @@ async function loadEvents() {
             <td>${new Date(event.EventDate).toLocaleString()}</td>
         `;
         eventsBody.appendChild(eventRow);
+
+        const option = document.createElement('option');
+        option.value = event.EventID;
+        option.textContent = `${event.EventName} (${new Date(event.EventDate).toLocaleDateString()})`;
+        eventSelect.appendChild(option);
     });
 }
 
 // Function to load tickets for a specific event
 async function loadTickets(eventId) {
-    const response = await fetch(`http://localhost:3000/tickets/${eventId}`);
+    const response = await fetch(`/tickets/${eventId}`);
     const tickets = await response.json();
 
     const bookedTicketsBody = document.getElementById('bookedTicketsBody');
@@ -116,8 +144,19 @@ async function loadTickets(eventId) {
 
         if (ticket.BookingStatus === 'Booked') {
             bookedTicketsBody.appendChild(ticketRow); // Add to booked tickets table
-        } else if (ticket.BookingStatus === 'Available') {
+        } else {
             availableTicketsBody.appendChild(ticketRow); // Add to available tickets table
         }
     });
+}
+
+function clearTickets() {
+    document.getElementById('bookedTicketsBody').innerHTML = '';
+    document.getElementById('availableTicketsBody').innerHTML = '';
+}
+
+function showMessage(text, success) {
+    const message = document.getElementById('message');
+    message.innerText = text;
+    message.className = success ? 'success' : 'error';
 }

@@ -41,8 +41,10 @@
 
         <h2>Book a Ticket</h2>
         <form id="bookingForm">
-            <label for="eventId">Event ID:</label>
-            <input type="number" id="eventId" name="eventId" required>
+            <label for="eventSelect">Select Event:</label>
+            <select id="eventSelect" name="eventSelect" required>
+                <option value="">Choose an event</option>
+            </select>
 
             <label for="seatNumber">Seat Number:</label>
             <input type="text" id="seatNumber" name="seatNumber" required>

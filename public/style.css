@@ -71,6 +71,13 @@ button:hover {
 #message {
     margin-top: 20px; /* Margin above message */
     font-weight: bold; /* Bold text for messages */
+}
+
+#message.success {
+    color: #28a745; /* Green color for success messages */
+}
+
+#message.error {
     color: #d9534f; /* Red color for error messages */
 }
 
