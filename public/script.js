@@ -32,11 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('bookingForm').addEventListener('submit', async (event) => {
         event.preventDefault();
         const eventId = document.getElementById('eventSelect').value;
-        const seatNumber = document.getElementById('seatNumber').value;
-        const price = document.getElementById('price').value;
+        const seatNumber = document.getElementById('seatNumber').value.trim();
+        const price = document.getElementById('priceSelect').value;
 
         if (!eventId) {
             showMessage('Please select an event before booking.', false);
+            return;
+        }
+
+        if (!seatNumber) {
+            showMessage('Please enter a seat number.', false);
             return;
         }
 
@@ -52,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showMessage(result.message, response.ok);
         if (response.ok) {
             loadTickets(eventId);
+            document.getElementById('seatNumber').value = '';
         }
     });
 
@@ -92,8 +98,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    populatePriceOptions();
     loadEvents();
 });
+
+function populatePriceOptions() {
+    const priceSelect = document.getElementById('priceSelect');
+    const prices = [100, 150, 200, 250, 300, 400];
+
+    priceSelect.innerHTML = '<option value="">Choose a price tier</option>';
+    prices.forEach((price) => {
+        const option = document.createElement('option');
+        option.value = price;
+        option.textContent = `₹${price}`;
+        priceSelect.appendChild(option);
+    });
+}
 
 // Function to load events and display them
 async function loadEvents() {

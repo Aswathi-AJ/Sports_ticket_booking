@@ -35,12 +35,24 @@ form {
     background-color: #f9f9f9; /* Light background for forms */
 }
 
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
 label {
     display: block; /* Block display for labels */
     margin: 10px 0 5px; /* Margin for labels */
 }
 
-input {
+input,
+select {
     width: 100%; /* Full width for inputs */
     padding: 10px; /* Padding for inputs */
     margin-bottom: 10px; /* Margin below inputs */
@@ -66,6 +78,63 @@ button {
 
 button:hover {
     background-color: #45a049; /* Darker green on hover */
+}
+
+select {
+    appearance: none;
+    background-color: white;
+}
+
+table {
+    width: 100%; /* Full width for tables */
+    border-collapse: collapse; /* Collapse borders */
+    margin-top: 20px; /* Margin above tables */
+    font-size: 0.95rem;
+}
+
+th,
+td {
+    border: 1px solid #ccc; /* Light border for table cells */
+    padding: 10px; /* Padding for table cells */
+    text-align: left; /* Left align text */
+}
+
+th {
+    background-color: #4CAF50; /* Green background for table headers */
+    color: white; /* White text for headers */
+}
+
+.container {
+    max-width: 1000px; /* wider layout */
+    margin: 20px auto; /* Center the container */
+    padding: 20px; /* Padding for the container */
+    background-color: white; /* White background for the container */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12); /* Shadow effect */
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.message-box {
+    padding: 12px 14px;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-weight: 600;
+}
+
+#message.success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+#message.error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
 }
 
 #message {
