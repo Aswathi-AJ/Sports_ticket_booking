@@ -12,106 +12,171 @@
     </div>
 
     <div class="container">
-        <h2>Available Events</h2>
-        <table id="eventsTable">
-            <thead>
-                <tr>
-                    <th>Event ID</th>
-                    <th>Event Name</th>
-                    <th>Venue</th>
-                    <th>Event Date</th>
-                </tr>
-            </thead>
-            <tbody id="events"></tbody>
-        </table>
-
-        <h2>Add New Event</h2>
-        <form id="addEventForm">
-            <label for="eventName">Event Name:</label>
-            <input type="text" id="eventName" name="eventName" required>
-
-            <label for="venue">Venue:</label>
-            <input type="text" id="venue" name="venue" required>
-
-            <label for="eventDate">Event Date:</label>
-            <input type="datetime-local" id="eventDate" name="eventDate" required>
-
-            <button type="submit">Add Event</button>
-        </form>
-
-        <h2>Book a Ticket</h2>
-        <form id="bookingForm">
-            <label for="eventSelect">Select Event:</label>
-            <select id="eventSelect" name="eventSelect" required>
-                <option value="">Choose an event</option>
-            </select>
-
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="seatNumber">Seat Number:</label>
-                    <input type="text" id="seatNumber" name="seatNumber" placeholder="A1, B5, C10" required>
+        <section class="hero">
+            <div>
+                <p class="eyebrow">Ticketing Platform</p>
+                <h2>Book sports events with ease</h2>
+                <p class="hero-text">Select an event, choose a seat from the seat map, and confirm your booking.</p>
+            </div>
+            <div class="hero-actions">
+                <div class="stat-card">
+                    <span class="stat-number">Fast</span>
+                    <span class="stat-label">Quick event selection</span>
                 </div>
-                <div class="form-group">
-                    <label for="priceSelect">Ticket Price:</label>
-                    <select id="priceSelect" name="priceSelect" required>
-                        <option value="">Choose a price tier</option>
-                    </select>
+                <div class="stat-card">
+                    <span class="stat-number">Clear</span>
+                    <span class="stat-label">Live seat map</span>
                 </div>
             </div>
+        </section>
 
-            <button type="submit">Book Ticket</button>
-        </form>
+        <div class="dashboard-grid">
+            <section class="panel panel-events">
+                <div class="panel-header">
+                    <h3>Available Events</h3>
+                    <p class="panel-description">Click any event row to begin booking.</p>
+                </div>
+                <table id="eventsTable">
+                    <thead>
+                        <tr>
+                            <th>Event ID</th>
+                            <th>Event Name</th>
+                            <th>Venue</th>
+                            <th>Event Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="events"></tbody>
+                </table>
+            </section>
 
-        <h2>Update Ticket Price</h2>
-        <form id="updateForm">
-            <label for="ticketId">Ticket ID:</label>
-            <input type="number" id="ticketId" name="ticketId" required>
+            <section class="panel panel-booking">
+                <div class="panel-header">
+                    <h3>Book a Ticket</h3>
+                    <p class="panel-description">Choose an event, select a seat, and confirm.</p>
+                </div>
 
-            <label for="newPrice">New Price:</label>
-            <input type="number" id="newPrice" name="newPrice" required>
+                <form id="bookingForm" class="booking-form">
+                    <label for="eventSelect">Choose event</label>
+                    <select id="eventSelect" name="eventSelect" required>
+                        <option value="">Choose an event</option>
+                    </select>
 
-            <button type="submit">Update Price</button>
-        </form>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="seatSelect">Selected Seat</label>
+                            <input type="text" id="seatSelect" name="seatSelect" readonly placeholder="Select a seat on the map" required>
+                            <div class="selected-seat-label">Selected: <span id="selectedSeatValue">None</span></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="priceSelect">Ticket Price</label>
+                            <select id="priceSelect" name="priceSelect" required>
+                                <option value="">Choose a price tier</option>
+                            </select>
+                        </div>
+                    </div>
 
-        <h2>Delete a Ticket</h2>
-        <form id="deleteForm">
-            <label for="deleteTicketId">Ticket ID:</label>
-            <input type="number" id="deleteTicketId" name="deleteTicketId" required>
+                    <button type="submit" class="primary-button">Book Ticket</button>
+                </form>
 
-            <button type="submit">Delete Ticket</button>
-        </form>
+                <div id="eventDetails" class="event-details hidden">
+                    <h4>Selected event</h4>
+                    <p id="eventSummaryText">Select an event to see details and available seats.</p>
+                    <div class="summary-row"><strong>Available seats:</strong> <span id="availableSeatCount">0</span></div>
+                    <div class="summary-row"><strong>Booked seats:</strong> <span id="bookedSeatList">None</span></div>
+                </div>
 
-        <h2>Booked Tickets for Selected Event</h2>
-        <table id="bookedTicketsTable">
-            <thead>
-                <tr>
-                    <th>Ticket ID</th>
-                    <th>Seat Number</th>
-                    <th>Price</th>
-                    <th>Booking Status</th>
-                </tr>
-            </thead>
-            <tbody id="bookedTicketsBody">
-                <!-- Booked tickets will be populated here -->
-            </tbody>
-        </table>
+                <div id="seatMapSection" class="seat-map-section hidden">
+                    <h4>Seat map</h4>
+                    <div id="seatMap" class="seat-map"></div>
+                    <p class="seat-note">Click a green seat to select it. Red seats are already booked.</p>
+                </div>
+            </section>
+        </div>
 
-        <h2>Available Tickets for Selected Event</h2>
-        <table id="availableTicketsTable">
-            <thead>
-                <tr>
-                    <th>Ticket ID</th>
-                    <th>Seat Number</th>
-                    <th>Price</th>
-                    <th>Booking Status</th>
-                </tr>
-            </thead>
-            <tbody id="availableTicketsBody">
-                <!-- Available tickets will be populated here -->
-            </tbody>
-        </table>
+        <section class="panel panel-admin">
+            <div class="panel-header">
+                <h3>Admin Controls</h3>
+                <p class="panel-description">Add events or manage ticket pricing from one place.</p>
+            </div>
 
-        <div id="message"></div>
+            <div class="admin-grid">
+                <div class="admin-card">
+                    <h4>Add New Event</h4>
+                    <form id="addEventForm" class="admin-form">
+                        <label for="eventName">Event Name</label>
+                        <input type="text" id="eventName" name="eventName" required>
+
+                        <label for="venue">Venue</label>
+                        <input type="text" id="venue" name="venue" required>
+
+                        <label for="eventDate">Event Date</label>
+                        <input type="datetime-local" id="eventDate" name="eventDate" required>
+
+                        <button type="submit" class="secondary-button">Add Event</button>
+                    </form>
+                </div>
+
+                <div class="admin-card">
+                    <h4>Update Ticket Price</h4>
+                    <form id="updateForm" class="admin-form">
+                        <label for="ticketId">Ticket ID</label>
+                        <input type="number" id="ticketId" name="ticketId" required>
+
+                        <label for="newPrice">New Price</label>
+                        <input type="number" id="newPrice" name="newPrice" required>
+
+                        <button type="submit" class="secondary-button">Update Price</button>
+                    </form>
+                </div>
+
+                <div class="admin-card">
+                    <h4>Delete a Ticket</h4>
+                    <form id="deleteForm" class="admin-form">
+                        <label for="deleteTicketId">Ticket ID</label>
+                        <input type="number" id="deleteTicketId" name="deleteTicketId" required>
+
+                        <button type="submit" class="secondary-button">Delete Ticket</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel panel-tables">
+            <div class="panel-header"><h3>Ticket Overview</h3></div>
+            <div class="table-grid">
+                <div class="table-card">
+                    <h4>Booked Tickets</h4>
+                    <table id="bookedTicketsTable">
+                        <thead>
+                            <tr>
+                                <th>Ticket ID</th>
+                                <th>Seat</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookedTicketsBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="table-card">
+                    <h4>Available Tickets</h4>
+                    <table id="availableTicketsTable">
+                        <thead>
+                            <tr>
+                                <th>Ticket ID</th>
+                                <th>Seat</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="availableTicketsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <div id="message" class="notification hidden"></div>
     </div>
 
     <script src="script.js"></script>
